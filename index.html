@@ -1,331 +1,86 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>生理觀測追蹤表</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 引入 Lucide 圖示庫 -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <style>
-    /* 引用溫暖乾淨的字體 */
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>生理期觀測追蹤表</title>
     
-    /* 引用進場小動畫，讓跳出金句時更柔和 */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .fade-in-up {
-      animation: fadeInUp 0.4s ease-out forwards;
-    }
-  </style>
+    <!-- PWA 與手機桌面化設定 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Red Power">
+    <meta name="theme-color" content="#fffafb">
+
+    <!-- App 圖示：在愛心下方融入了 Red Power 字樣 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23ff8a98%22/><path d=%22M50 72s-22-13-22-26c0-7 6-13 11-13 4 0 7 2 11 6 4-4 7-6 11-6 5 0 11 6 11 13 0 13-22 26-22 26z%22 fill=%22white%22/><text x=%2250%22 y=%2288%22 font-family=%22sans-serif%22 font-size=%2210%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>Red Power</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23ff8a98%22/><path d=%22M50 72s-22-13-22-26c0-7 6-13 11-13 4 0 7 2 11 6 4-4 7-6 11-6 5 0 11 6 11 13 0 13-22 26-22 26z%22 fill=%22white%22/><text x=%2250%22 y=%2288%22 font-family=%22sans-serif%22 font-size=%2210%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>Red Power</text></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Quicksand:wght@600&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fffafb;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .brand-font {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff8a98 0%, #ffc1cc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .soft-shadow {
+            box-shadow: 0 10px 25px -5px rgba(255, 138, 152, 0.1), 0 8px 10px -6px rgba(255, 138, 152, 0.1);
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-white p-4 md:p-12 text-stone-700 leading-relaxed">
-  <div class="max-w-4xl mx-auto">
-    
-    <!-- Notion Style Header -->
-    <div class="flex flex-col mb-8 px-1">
-      <div class="flex items-center gap-4 mb-3">
-        <div class="text-4xl">🗓️</div>
-        <div class="flex items-end gap-2 border-b-2 border-stone-100 focus-within:border-stone-400 transition-colors pb-1">
-          <input 
-            type="text" 
-            id="userNameInput"
-            placeholder="誰"
-            class="text-4xl font-bold text-stone-900 bg-transparent outline-none w-32 placeholder:text-stone-200"
-          />
-          <span class="text-4xl font-bold text-stone-900">的生理觀測追蹤表</span>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 text-[#4a4a4a]">
+
+    <div class="max-w-2xl w-full text-center">
+        <!-- 標題與品牌區域 -->
+        <header class="mb-10">
+            <div class="inline-flex flex-col items-center">
+                <!-- 核心圖示容器 -->
+                <div class="p-5 bg-white rounded-3xl mb-3 soft-shadow border border-pink-50">
+                    <svg class="w-12 h-12 text-[#ff8a98]" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <!-- 品牌名稱 -->
+                <span class="brand-font text-[#ff8a98] font-bold tracking-widest text-sm uppercase mb-4">Red Power</span>
+            </div>
+            
+            <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-4">
+                生理期觀測追蹤表
+            </h1>
+            <p class="text-gray-400 text-lg font-light tracking-wide px-4">
+                讀懂身體的悄悄話，記錄屬於妳的溫柔節奏。
+            </p>
+        </header>
+
+        <!-- 內容容器 -->
+        <div class="bg-white/60 backdrop-blur-sm rounded-[2rem] p-10 soft-shadow border border-pink-50 min-h-[250px] flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- 裝飾用的淡粉色圓圈 -->
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-pink-50 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+            
+            <p class="text-pink-400 font-medium mb-3 relative z-10">嗨！這是專屬於妳的 Red Power</p>
+            <p class="text-gray-400 text-sm italic leading-relaxed relative z-10">
+                點擊下方分享按鈕並「加入主畫面」<br>
+                讓妳製作的專屬工具常駐在桌面上。
+            </p>
         </div>
-      </div>
-      <div class="text-stone-500 text-base italic font-medium">
-        「讓身體的語言，成為妳生活的指南。」
-      </div>
+        
+        <footer class="mt-8">
+            <p class="text-gray-300 text-xs font-light tracking-widest uppercase">Created by Red Power</p>
+        </footer>
     </div>
 
-    <!-- Properties Section -->
-    <div class="border-t border-b border-stone-100 py-6 mb-10 space-y-4">
-      <div class="flex items-center gap-8">
-        <div class="flex items-center gap-2 w-40 text-stone-400 text-sm">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          <span>本月經期第一天</span>
-        </div>
-        <input 
-          type="date" 
-          id="startDateInput"
-          class="hover:bg-stone-100 px-3 py-1.5 rounded-lg transition-colors outline-none text-sm font-medium bg-stone-50 cursor-pointer text-stone-600"
-        />
-      </div>
-      <div class="flex items-center gap-8">
-        <div class="flex items-center gap-2 w-40 text-stone-400 text-sm">
-          <i data-lucide="info" class="w-4 h-4"></i>
-          <span>目前的妳</span>
-        </div>
-        <!-- 動態標籤容器 -->
-        <span id="currentPhaseBadge" class="text-xs px-3 py-1 rounded-full font-bold transition-all bg-stone-100 text-stone-400">
-          <div class="flex items-center gap-2">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span id="currentPhaseText">等待紀錄中</span>
-          </div>
-        </span>
-      </div>
-    </div>
-
-    <!-- Table Content -->
-    <div class="mb-6">
-      <div class="text-[10px] font-bold text-stone-400 uppercase tracking-[0.3em] mb-6 px-1 border-l-4 border-stone-200 pl-4">
-         Cycle Overview & Observation
-      </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead>
-            <tr class="border-b border-stone-100 text-stone-400">
-              <th class="py-3 font-normal px-2">階段名稱</th>
-              <th class="py-3 font-normal px-2">推算區間</th>
-              <th class="py-3 font-normal px-2">觀測重點</th>
-              <th class="py-3 font-normal px-2 text-center">真實紀錄</th>
-              <th class="py-3 font-normal text-center">小禮物</th>
-            </tr>
-          </thead>
-          <tbody id="phasesTbody">
-            <!-- 這裡由 JavaScript 動態生成，方便管理資料 -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Reference Note -->
-    <div class="text-stone-300 text-[11px] mb-8 px-2 italic">
-      * 推算僅供參考，每個人的身體節奏都是獨特的
-    </div>
-
-    <!-- Dynamic Quote Area (預設隱藏) -->
-    <div id="quoteArea" class="hidden bg-orange-50/50 border border-orange-100 rounded-2xl p-6 mb-10 flex gap-4 fade-in-up">
-      <div class="text-2xl text-orange-400">✨</div>
-      <div>
-        <div id="quotePhaseName" class="text-[10px] font-bold text-orange-800/60 mb-1 uppercase tracking-widest">
-          Message
-        </div>
-        <p id="quoteText" class="text-stone-700 font-medium italic"></p>
-      </div>
-    </div>
-
-    <!-- Final Remarks -->
-    <div class="mt-8 px-1">
-      <div class="flex items-center gap-2 mb-4">
-        <i data-lucide="pen-tool" class="w-4 h-4 text-stone-400"></i>
-        <span class="text-sm font-bold text-stone-400 uppercase tracking-widest">身心隨筆</span>
-      </div>
-      <div class="p-6 bg-stone-50 rounded-2xl border border-stone-100 shadow-inner">
-        <textarea 
-          id="diaryInput"
-          class="w-full bg-transparent text-sm outline-none resize-none h-40 placeholder:text-stone-300 leading-relaxed"
-          placeholder="今天的心靈天氣是晴天還是陰天？身體感覺重重的嗎？&#10;在這裡寫下任何微小的發現，不用很專業，真實地記錄這段旅程就很棒了。"
-        ></textarea>
-      </div>
-    </div>
-
-    <!-- Footer Attribution -->
-    <div class="mt-20 pt-10 border-t border-stone-100 text-center">
-      <div class="text-stone-500 font-bold tracking-[0.2em] text-sm">
-        @morelove.howbu / Red Power 女子俱樂部
-      </div>
-      <div class="text-stone-300 text-[10px] mt-4 tracking-widest uppercase">
-        Original Content for Awareness & Self-Love
-      </div>
-    </div>
-
-  </div>
-
-  <!-- JavaScript 邏輯區 -->
-  <script>
-    // 定義各階段資料
-    const phases = [
-      {
-        name: '月經期 (冬)', iconName: 'moon', iconColor: 'text-blue-500', tagColor: 'text-blue-600 bg-blue-100',
-        duration: '4-7 天', offset: 0, avg: 5, focus: '觀察經血顏色與流量，感受腹部重力。',
-        warmQuotes: ["今天，允許自己徹底躺平也是一種進步。", "外界的嘈雜先關掉吧，現在只需要聽妳內心的聲音。", "妳的身體正在斷捨離，辛苦了，親愛的。", "熱水、厚襪子、還有最舒服的妳。這樣就很好了。", "這幾天，世界慢一點也沒關係。關機是為了更好的重啟。"]
-      },
-      {
-        name: '濾泡期 (春)', iconName: 'wind', iconColor: 'text-green-500', tagColor: 'text-green-600 bg-green-100',
-        duration: '7-10 天', offset: 5, avg: 8, focus: '覺察能量回升，觀察皮膚光澤與分泌物。',
-        warmQuotes: ["感受那股慢慢甦醒的力量，妳正在發芽。", "這幾天的妳很有靈感，想做什麼就去試試看吧！", "春天的陽光很好，妳也是。", "能量在回穩，妳可以開始溫柔地掌控生活了。", "試試看那個很久沒做的興趣，現在手感最好。"]
-      },
-      {
-        name: '排卵期 (夏)', iconName: 'sun', iconColor: 'text-orange-500', tagColor: 'text-orange-600 bg-orange-100',
-        duration: '3-5 天', offset: 13, avg: 4, focus: '感受最有活力的社交能量，觀察自信心狀態。',
-        warmQuotes: ["現在的妳，連走路都有光在跟隨。", "別吝嗇分享妳的快樂，妳的感染力正處於高峰。", "主動去見那個想見的人吧，今天妳最耀眼。", "這幾天的魅力是賀爾蒙送妳的禮物，好好享受它。", "相信妳的直覺，它現在非常敏銳且準確。"]
-      },
-      {
-        name: '黃體期 (秋)', iconName: 'leaf', iconColor: 'text-red-500', tagColor: 'text-red-600 bg-red-100',
-        duration: '10-14 天', offset: 17, avg: 12, focus: '覺察灰色濾鏡，觀察食慾變化與情緒波動。',
-        warmQuotes: ["如果想哭，就哭出來吧。那只是心裡的灰塵在打掃。", "看什麼都不順眼時，記得那只是賀爾蒙的惡作劇。", "這幾天妳不需要完美，只需要對自己溫柔。", "買杯想喝的飲料吧，這點程度的任性是被允許的。", "雖然水腫或冒痘，但那不影響妳本質的可愛。"]
-      }
-    ];
-
-    // DOM 元素參考
-    const userNameInput = document.getElementById('userNameInput');
-    const startDateInput = document.getElementById('startDateInput');
-    const currentPhaseBadge = document.getElementById('currentPhaseBadge');
-    const phasesTbody = document.getElementById('phasesTbody');
-    const quoteArea = document.getElementById('quoteArea');
-    const quotePhaseName = document.getElementById('quotePhaseName');
-    const quoteText = document.getElementById('quoteText');
-    const diaryInput = document.getElementById('diaryInput');
-    
-    let activeQuotePhaseIndex = null;
-
-    // 【新增】讀取本地儲存的資料
-    function loadSavedData() {
-      if(localStorage.getItem('userName')) userNameInput.value = localStorage.getItem('userName');
-      if(localStorage.getItem('startDate')) startDateInput.value = localStorage.getItem('startDate');
-      if(localStorage.getItem('diary')) diaryInput.value = localStorage.getItem('diary');
-    }
-
-    // 計算日期文字
-    function calculateDate(startStr, days) {
-      if (!startStr) return 'YYYY/MM/DD';
-      let date = new Date(startStr);
-      if (date.getFullYear() < 1000) date.setFullYear(date.getFullYear() + 1911);
-      date.setDate(date.getDate() + days);
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const dd = String(date.getDate()).padStart(2, '0');
-      return `${date.getFullYear()}/${mm}/${dd}`;
-    }
-
-    // 渲染表格內容
-    function renderTable() {
-      const startDate = startDateInput.value;
-      
-      phasesTbody.innerHTML = phases.map((phase, i) => {
-        const dateRangeStr = startDate 
-          ? `${calculateDate(startDate, phase.offset)} - ${calculateDate(startDate, phase.offset + phase.avg - 1)}`
-          : 'YYYY/MM/DD - YYYY/MM/DD';
-
-        const btnClass = activeQuotePhaseIndex === i 
-          ? 'bg-orange-100 text-orange-500 shadow-sm' 
-          : 'text-stone-200 hover:text-orange-300 hover:bg-stone-50';
-
-        // 【新增】取得各階段真實紀錄的存檔
-        const savedRecord = localStorage.getItem(`realRecord_${i}`) || '';
-
-        return `
-          <tr class="group border-b border-stone-50 hover:bg-stone-50/50 transition-all">
-            <td class="py-5 px-2">
-              <div class="flex items-center gap-3">
-                <span class="opacity-70 ${phase.iconColor}">
-                  <i data-lucide="${phase.iconName}" class="w-5 h-5"></i>
-                </span>
-                <span class="font-bold text-stone-800 whitespace-nowrap">${phase.name}</span>
-              </div>
-            </td>
-            <td class="py-5 px-2 text-stone-500 font-mono text-xs md:text-sm">
-              ${dateRangeStr}
-            </td>
-            <td class="py-5 px-2">
-               <span class="text-stone-400 text-xs italic leading-tight block max-w-[180px]">${phase.focus}</span>
-            </td>
-            <td class="py-5 px-2 text-center">
-              <input 
-                type="text" 
-                value="${savedRecord}"
-                oninput="localStorage.setItem('realRecord_${i}', this.value)"
-                placeholder="MM/DD - MM/DD"
-                class="bg-transparent border-b border-stone-100 focus:border-stone-400 outline-none w-28 text-center text-xs p-1 placeholder:text-stone-200 text-stone-600"
-              />
-            </td>
-            <td class="py-5 text-center">
-              <button 
-                onclick="showRandomQuote(${i})"
-                class="p-2 rounded-full transition-all ${btnClass}"
-                title="點擊拆開小禮物"
-              >
-                <i data-lucide="gift" class="w-5 h-5"></i>
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-
-      lucide.createIcons();
-    }
-
-    // 更新目前階段標籤
-    function updateCurrentPhase(startDate) {
-      if (!startDate) return;
-
-      let start = new Date(startDate);
-      if (start.getFullYear() < 1000) start.setFullYear(start.getFullYear() + 1911);
-
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      start.setHours(0, 0, 0, 0);
-
-      const diffTime = today - start;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      const currentDay = diffDays >= 0 ? (diffDays % 28) : -1;
-      
-      let phaseIdx = null;
-      if (currentDay >= 17) phaseIdx = 3;
-      else if (currentDay >= 13) phaseIdx = 2;
-      else if (currentDay >= 5) phaseIdx = 1;
-      else if (currentDay >= 0) phaseIdx = 0;
-
-      if (phaseIdx !== null) {
-        const phase = phases[phaseIdx];
-        currentPhaseBadge.className = `text-xs px-3 py-1 rounded-full font-bold transition-all ${phase.tagColor}`;
-        currentPhaseBadge.innerHTML = `
-          <div class="flex items-center gap-2 ${phase.iconColor}">
-            <i data-lucide="${phase.iconName}" class="w-3.5 h-3.5"></i>
-            <span class="text-stone-600">${phase.name}</span>
-          </div>
-        `;
-      }
-      lucide.createIcons();
-    }
-
-    // 顯示隨機小語
-    window.showRandomQuote = function(index) {
-      const quotes = phases[index].warmQuotes;
-      const text = quotes[Math.floor(Math.random() * quotes.length)];
-      
-      activeQuotePhaseIndex = index;
-      quotePhaseName.textContent = `Message for ${phases[index].name}`;
-      quoteText.textContent = `「${text}」`;
-      
-      quoteArea.classList.remove('hidden', 'fade-in-up');
-      void quoteArea.offsetWidth; // 強制重繪觸發動畫
-      quoteArea.classList.add('fade-in-up');
-      
-      renderTable();
-    };
-
-    // 【新增】監聽輸入並自動存檔
-    userNameInput.addEventListener('input', (e) => localStorage.setItem('userName', e.target.value));
-    diaryInput.addEventListener('input', (e) => localStorage.setItem('diary', e.target.value));
-    
-    startDateInput.addEventListener('change', (e) => {
-      const dateVal = e.target.value;
-      localStorage.setItem('startDate', dateVal); // 存檔日期
-      updateCurrentPhase(dateVal);
-      renderTable();
-    });
-
-    // 初始化頁面
-    loadSavedData();
-    updateCurrentPhase(startDateInput.value);
-    renderTable();
-    lucide.createIcons();
-
-  </script>
 </body>
 </html>
