@@ -12,8 +12,12 @@
     <meta name="apple-mobile-web-app-title" content="Red Power">
     <meta name="theme-color" content="#fffafb">
 
-    <!-- App Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23ff8a98%22/><path d=%22M50 72s-22-13-22-26c0-7 6-13 11-13 4 0 7 2 11 6 4-4 7-6 11-6 5 0 11 6 11 13 0 13-22 26-22 26z%22 fill=%22white%22/><text x=%2250%22 y=%2288%22 font-family=%22sans-serif%22 font-size=%2210%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>Red Power</text></svg>">
+    <!-- Web Manifest (用來強化 App 識別度) -->
+    <link rel="manifest" href="data:application/manifest+json,{"name":"Red Power","short_name":"Red Power","start_url":".","display":"standalone","background_color":"%23fffafb","theme_color":"%23ff8a98"}">
+
+    <!-- App Icon (修正後的轉碼語法，確保手機讀取成功) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ff8a98'/%3E%3Cpath d='M50 72s-22-13-22-26c0-7 6-13 11-13 4 0 7 2 11 6 4-4 7-6 11-6 5 0 11 6 11 13 0 13-22 26-22 26z' fill='white'/%3E%3Ctext x='50' y='88' font-family='sans-serif' font-size='10' font-weight='bold' fill='white' text-anchor='middle'%3ERed Power%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ff8a98'/%3E%3Cpath d='M50 72s-22-13-22-26c0-7 6-13 11-13 4 0 7 2 11 6 4-4 7-6 11-6 5 0 11 6 11 13 0 13-22 26-22 26z' fill='white'/%3E%3Ctext x='50' y='88' font-family='sans-serif' font-size='10' font-weight='bold' fill='white' text-anchor='middle'%3ERed Power%3C/text%3E%3C/svg%3E">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -58,7 +62,6 @@
         }
         .animate-in { animation: fadeInUp 0.4s ease-out forwards; }
 
-        /* 修改 Date Input 外觀 */
         input[type="date"]::-webkit-inner-spin-button,
         input[type="date"]::-webkit-calendar-picker-indicator {
             opacity: 0.3;
@@ -142,7 +145,6 @@
                         <i data-lucide="sparkles" class="w-4 h-4"></i>
                         <span>目前的妳</span>
                     </div>
-                    <!-- 動態標籤容器 -->
                     <span id="currentPhaseBadge" class="inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold transition-all bg-stone-100 text-stone-400">
                         <span id="currentPhaseContent" class="flex items-center gap-2">
                             <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
@@ -169,7 +171,6 @@
                             </tr>
                         </thead>
                         <tbody id="phasesTbody">
-                            <!-- 由 JS 生成 -->
                         </tbody>
                     </table>
                 </div>
@@ -214,7 +215,6 @@
     </div>
 
     <script>
-        // --- 核心資料 ---
         const phases = [
             {
                 name: '月經期 (冬)', iconName: 'moon', iconColor: 'text-blue-400', tagColor: 'text-blue-500 bg-blue-50',
@@ -240,7 +240,6 @@
 
         let activeQuotePhaseIndex = null;
 
-        // --- 初始化邏輯 ---
         window.onload = () => {
             loadSavedData();
             updateCurrentPhase(document.getElementById('startDateInput').value);
@@ -265,7 +264,6 @@
             if(localStorage.getItem('rp_startDate')) dateInput.value = localStorage.getItem('rp_startDate');
             if(localStorage.getItem('rp_diary')) diary.value = localStorage.getItem('rp_diary');
             
-            // 監聽並自動儲存
             nameInput.addEventListener('input', e => localStorage.setItem('rp_userName', e.target.value));
             diary.addEventListener('input', e => localStorage.setItem('rp_diary', e.target.value));
             dateInput.addEventListener('change', e => {
