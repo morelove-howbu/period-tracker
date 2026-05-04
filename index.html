@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-title" content="Red Power">
     <meta name="theme-color" content="#fffafb">
 
-    <!-- 這裡已經更新為讀取你上傳的 icon.png 圖片 -->
+    <!-- App Icon (請確保專案內有上傳 icon.png) -->
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="shortcut icon" href="icon.png">
@@ -60,10 +60,12 @@
         }
         .animate-in { animation: fadeInUp 0.4s ease-out forwards; }
 
-        /* 修改 Date Input 外觀 */
         input[type="date"]::-webkit-inner-spin-button,
         input[type="date"]::-webkit-calendar-picker-indicator {
             opacity: 0.3;
+        }
+        input[type="number"]::-webkit-inner-spin-button {
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -97,7 +99,6 @@
 
     <!-- 頁面 2：Notion Style 紀錄空間 -->
     <div id="tracker-view" class="hidden min-h-screen pb-20 animate-in">
-        <!-- 頂部導覽 -->
         <nav class="sticky top-0 bg-[#fffafb]/80 backdrop-blur-md z-30 px-6 py-4 flex items-center justify-between border-b border-pink-50">
             <button onclick="switchView('welcome-view')" class="p-2 text-gray-400">
                 <i data-lucide="arrow-left" class="w-6 h-6"></i>
@@ -107,7 +108,7 @@
         </nav>
 
         <main class="p-6 md:p-12 max-w-4xl mx-auto">
-            <!-- Notion Style Header -->
+            <!-- Header -->
             <div class="flex flex-col mb-10 px-1">
                 <div class="flex items-center gap-4 mb-4">
                     <div class="text-5xl">🗓️</div>
@@ -118,7 +119,7 @@
                             placeholder="妳的名字"
                             class="text-3xl md:text-4xl font-bold text-stone-800 bg-transparent outline-none w-40 placeholder:text-pink-100"
                         />
-                        <span class="text-3xl md:text-4xl font-bold text-stone-800">的生理觀測追蹤表</span>
+                        <span class="text-3xl md:text-4xl font-bold text-stone-800">的生理追蹤表</span>
                     </div>
                 </div>
                 <div class="text-pink-400 text-base italic font-medium opacity-80">
@@ -126,45 +127,81 @@
                 </div>
             </div>
 
-            <!-- Properties Section -->
-            <div class="bg-white rounded-3xl p-6 mb-10 soft-shadow border border-pink-50 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
-                    <div class="flex items-center gap-2 w-44 text-stone-400 text-sm">
-                        <i data-lucide="calendar" class="w-4 h-4"></i>
-                        <span>本月經期第一天</span>
+            <!-- 全新升級：設定與預測面板 (Grid Layout) -->
+            <div class="bg-white rounded-3xl p-6 md:p-8 mb-10 soft-shadow border border-pink-50 flex flex-col gap-6">
+                <!-- 第一排：日期與週期天數 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-row items-center gap-4">
+                        <div class="flex items-center gap-2 w-32 text-stone-400 text-sm shrink-0">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            <span>本月第一天</span>
+                        </div>
+                        <input 
+                            type="date" 
+                            id="startDateInput"
+                            class="hover:bg-pink-50 px-3 py-2 rounded-xl transition-colors outline-none text-sm font-medium bg-pink-50/40 cursor-pointer text-stone-600 border border-transparent focus:border-pink-200 w-full md:w-auto"
+                        />
                     </div>
-                    <input 
-                        type="date" 
-                        id="startDateInput"
-                        class="hover:bg-pink-50 px-4 py-2 rounded-xl transition-colors outline-none text-sm font-medium bg-pink-50/30 cursor-pointer text-stone-600 border border-transparent focus:border-pink-200"
-                    />
+                    <div class="flex flex-row items-center gap-4">
+                        <div class="flex items-center gap-2 w-32 text-stone-400 text-sm shrink-0">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>平均週期</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input 
+                                type="number" 
+                                id="cycleLengthInput"
+                                value="28" min="21" max="60"
+                                class="hover:bg-pink-50 px-3 py-2 rounded-xl transition-colors outline-none text-sm font-bold bg-pink-50/40 text-stone-600 border border-transparent focus:border-pink-200 w-20 text-center"
+                            />
+                            <span class="text-stone-400 text-sm font-medium">天</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 border-t border-stone-50 pt-4">
-                    <div class="flex items-center gap-2 w-44 text-stone-400 text-sm">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        <span>目前的妳</span>
-                    </div>
-                    <!-- 動態標籤容器 -->
-                    <span id="currentPhaseBadge" class="inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold transition-all bg-stone-100 text-stone-400">
-                        <span id="currentPhaseContent" class="flex items-center gap-2">
-                            <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
-                            <span id="currentPhaseText">等待紀錄中</span>
+                
+                <div class="h-px w-full bg-pink-50/50"></div>
+                
+                <!-- 第二排：目前狀態與下次預測 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-row items-center gap-4">
+                        <div class="flex items-center gap-2 w-32 text-stone-400 text-sm shrink-0">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            <span>目前的妳</span>
+                        </div>
+                        <span id="currentPhaseBadge" class="inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400">
+                            <span id="currentPhaseContent" class="flex items-center gap-2">
+                                <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
+                                <span>等待紀錄中</span>
+                            </span>
                         </span>
-                    </span>
+                    </div>
+                    <div class="flex flex-row items-center gap-4">
+                        <div class="flex items-center gap-2 w-32 text-stone-400 text-sm shrink-0">
+                            <i data-lucide="calendar-check" class="w-4 h-4"></i>
+                            <span>下次預測日</span>
+                        </div>
+                        <span id="nextCycleBadge" class="inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400">
+                            <span id="nextCycleContent" class="flex items-center gap-2">
+                                <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i>
+                                <span>等待紀錄中</span>
+                            </span>
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <!-- Table Content -->
             <div class="mb-10">
-                <div class="text-[10px] font-bold text-pink-300 uppercase tracking-[0.4em] mb-6 px-1 border-l-4 border-pink-200 pl-4">
-                    Cycle Overview & Observation
+                <div class="text-[10px] font-bold text-pink-300 uppercase tracking-[0.4em] mb-6 px-1 border-l-4 border-pink-200 pl-4 flex justify-between items-end">
+                    <span>Cycle Overview & Observation</span>
+                    <span class="text-stone-300 tracking-wider lowercase text-[9px]">*區間依妳的週期動態推算</span>
                 </div>
                 <div class="overflow-x-auto -mx-6 px-6">
                     <table class="w-full text-left text-sm min-w-[600px]">
                         <thead>
                             <tr class="border-b border-pink-100 text-stone-400">
                                 <th class="py-4 font-normal px-2 uppercase tracking-widest text-[10px]">階段名稱</th>
-                                <th class="py-4 font-normal px-2 uppercase tracking-widest text-[10px]">推算區間</th>
+                                <th class="py-4 font-normal px-2 uppercase tracking-widest text-[10px]">精準推算區間</th>
                                 <th class="py-4 font-normal px-2 uppercase tracking-widest text-[10px]">觀測重點</th>
                                 <th class="py-4 font-normal px-2 text-center uppercase tracking-widest text-[10px]">真實紀錄</th>
                                 <th class="py-4 font-normal text-center uppercase tracking-widest text-[10px]">小禮物</th>
@@ -203,50 +240,52 @@
                 </div>
             </div>
 
-            <!-- Footer Attribution -->
             <div class="mt-20 pt-10 border-t border-pink-50 text-center">
-                <div class="brand-font text-pink-300 font-bold tracking-[0.3em] text-sm uppercase">
-                    Red Power 女子俱樂部
-                </div>
-                <div class="text-stone-200 text-[10px] mt-4 tracking-widest uppercase font-light">
-                    @morelove.howbu | Self-Love Journey
-                </div>
+                <div class="brand-font text-pink-300 font-bold tracking-[0.3em] text-sm uppercase">Red Power 女子俱樂部</div>
+                <div class="text-stone-200 text-[10px] mt-4 tracking-widest uppercase font-light">@morelove.howbu | Self-Love Journey</div>
             </div>
         </main>
     </div>
 
     <script>
-        // --- 核心資料 ---
-        const phases = [
-            {
-                name: '月經期 (冬)', iconName: 'moon', iconColor: 'text-blue-400', tagColor: 'text-blue-500 bg-blue-50',
-                duration: '4-7 天', offset: 0, avg: 5, focus: '觀察經血顏色與流量，感受腹部重力。',
-                warmQuotes: ["今天，允許自己徹底躺平也是一種進步。", "外界的嘈雜先關掉吧，現在只需要聽妳內心的聲音。", "妳的身體正在斷捨離，辛苦了，親愛的。", "熱水、厚襪子、還有最舒服的妳。這樣就很好了。", "這幾天，世界慢一點也沒關係。關機是為了更好的重啟。"]
-            },
-            {
-                name: '濾泡期 (春)', iconName: 'wind', iconColor: 'text-green-400', tagColor: 'text-green-500 bg-green-50',
-                duration: '7-10 天', offset: 5, avg: 8, focus: '覺察能量回升，觀察皮膚光澤與分泌物。',
-                warmQuotes: ["感受那股慢慢甦醒的力量，妳正在發芽。", "這幾天的妳很有靈感，想做什麼就去試試看吧！", "春天的陽光很好，妳也是。", "能量在回穩，妳可以開始溫柔地掌控生活了。", "試試看那個很久沒做的興趣，現在手感最好。"]
-            },
-            {
-                name: '排卵期 (夏)', iconName: 'sun', iconColor: 'text-orange-400', tagColor: 'text-orange-500 bg-orange-50',
-                duration: '3-5 天', offset: 13, avg: 4, focus: '感受最有活力的社交能量，觀察自信心狀態。',
-                warmQuotes: ["現在的妳，連走路都有光在跟隨。", "別吝嗇分享妳的快樂，妳的感染力正處於高峰。", "主動去見那個想見的人吧，今天妳最耀眼。", "這幾天的魅力是賀爾蒙送妳的禮物，好好享受它。", "相信妳的直覺，它現在非常敏銳且準確。"]
-            },
-            {
-                name: '黃體期 (秋)', iconName: 'leaf', iconColor: 'text-pink-400', tagColor: 'text-pink-500 bg-pink-50',
-                duration: '10-14 天', offset: 17, avg: 12, focus: '覺察灰色濾鏡，觀察食慾變化與情緒波動。',
-                warmQuotes: ["如果想哭，就哭出來吧。那只是心裡的灰塵在打掃。", "看什麼都不順眼時，記得那只是賀爾蒙的惡作劇。", "這幾天妳不需要完美，只需要對自己溫柔。", "買杯想喝的飲料吧，這點程度的任性是被允許的。", "雖然水腫或冒痘，但那不影響妳本質的可愛。"]
-            }
+        // 基本階段文案定義
+        const phaseTexts = [
+            { name: '月經期 (冬)', iconName: 'moon', iconColor: 'text-blue-400', tagColor: 'text-blue-500 bg-blue-50', focus: '觀察經血顏色與流量，感受腹部重力。', warmQuotes: ["今天，允許自己徹底躺平也是一種進步。", "外界的嘈雜先關掉吧，現在只需要聽妳內心的聲音。", "妳的身體正在斷捨離，辛苦了，親愛的。", "這幾天，世界慢一點也沒關係。關機是為了更好的重啟。"] },
+            { name: '濾泡期 (春)', iconName: 'wind', iconColor: 'text-green-400', tagColor: 'text-green-500 bg-green-50', focus: '覺察能量回升，觀察皮膚光澤與分泌物。', warmQuotes: ["感受那股慢慢甦醒的力量，妳正在發芽。", "這幾天的妳很有靈感，想做什麼就去試試看吧！", "春天的陽光很好，妳也是。", "能量在回穩，妳可以開始溫柔地掌控生活了。"] },
+            { name: '排卵期 (夏)', iconName: 'sun', iconColor: 'text-orange-400', tagColor: 'text-orange-500 bg-orange-50', focus: '感受最有活力的社交能量，觀察自信心狀態。', warmQuotes: ["現在的妳，連走路都有光在跟隨。", "別吝嗇分享妳的快樂，妳的感染力正處於高峰。", "主動去見那個想見的人吧，今天妳最耀眼。", "相信妳的直覺，它現在非常敏銳且準確。"] },
+            { name: '黃體期 (秋)', iconName: 'leaf', iconColor: 'text-pink-400', tagColor: 'text-pink-500 bg-pink-50', focus: '覺察灰色濾鏡，觀察食慾變化與情緒波動。', warmQuotes: ["如果想哭，就哭出來吧。那只是心裡的灰塵在打掃。", "這幾天妳不需要完美，只需要對自己溫柔。", "買杯想喝的飲料吧，這點程度的任性是被允許的。", "雖然水腫或冒痘，但那不影響妳本質的可愛。"] }
         ];
 
         let activeQuotePhaseIndex = null;
 
-        // --- 初始化邏輯 ---
+        // 【全新演算法】根據使用者輸入的天數，精準推算各階段長度
+        function getDynamicPhases() {
+            let cycle = parseInt(document.getElementById('cycleLengthInput').value) || 28;
+            if (cycle < 21) cycle = 21; // 醫學極限防呆
+            
+            // 月經期：預設 5 天
+            let m_offset = 0, m_avg = 5;
+            // 黃體期：醫學上幾乎固定為下次月經前 14 天
+            let l_avg = 14, l_offset = cycle - l_avg;
+            // 排卵期：抓黃體期前 4 天為高危險/高能量期
+            let o_avg = 4, o_offset = l_offset - o_avg;
+            // 濾泡期：剩下的天數
+            let f_offset = m_offset + m_avg, f_avg = o_offset - f_offset;
+
+            // 防呆機制：若週期過短，壓縮濾泡期
+            if (f_avg < 1) { f_avg = 1; o_offset = f_offset + f_avg; l_offset = o_offset + o_avg; }
+
+            return [
+                { ...phaseTexts[0], offset: m_offset, avg: m_avg },
+                { ...phaseTexts[1], offset: f_offset, avg: f_avg },
+                { ...phaseTexts[2], offset: o_offset, avg: o_avg },
+                { ...phaseTexts[3], offset: l_offset, avg: l_avg }
+            ];
+        }
+
         window.onload = () => {
             loadSavedData();
-            updateCurrentPhase(document.getElementById('startDateInput').value);
-            renderTable();
+            updateAll();
             lucide.createIcons();
         };
 
@@ -259,45 +298,60 @@
         }
 
         function loadSavedData() {
-            const nameInput = document.getElementById('userNameInput');
-            const dateInput = document.getElementById('startDateInput');
-            const diary = document.getElementById('diaryInput');
+            const inputs = {
+                name: document.getElementById('userNameInput'),
+                date: document.getElementById('startDateInput'),
+                cycle: document.getElementById('cycleLengthInput'),
+                diary: document.getElementById('diaryInput')
+            };
 
-            if(localStorage.getItem('rp_userName')) nameInput.value = localStorage.getItem('rp_userName');
-            if(localStorage.getItem('rp_startDate')) dateInput.value = localStorage.getItem('rp_startDate');
-            if(localStorage.getItem('rp_diary')) diary.value = localStorage.getItem('rp_diary');
+            if(localStorage.getItem('rp_userName')) inputs.name.value = localStorage.getItem('rp_userName');
+            if(localStorage.getItem('rp_startDate')) inputs.date.value = localStorage.getItem('rp_startDate');
+            if(localStorage.getItem('rp_cycleLength')) inputs.cycle.value = localStorage.getItem('rp_cycleLength');
+            if(localStorage.getItem('rp_diary')) inputs.diary.value = localStorage.getItem('rp_diary');
             
-            // 監聽並自動儲存
-            nameInput.addEventListener('input', e => localStorage.setItem('rp_userName', e.target.value));
-            diary.addEventListener('input', e => localStorage.setItem('rp_diary', e.target.value));
-            dateInput.addEventListener('change', e => {
+            // 綁定儲存與連動更新
+            inputs.name.addEventListener('input', e => localStorage.setItem('rp_userName', e.target.value));
+            inputs.diary.addEventListener('input', e => localStorage.setItem('rp_diary', e.target.value));
+            
+            inputs.date.addEventListener('change', e => {
                 localStorage.setItem('rp_startDate', e.target.value);
-                updateCurrentPhase(e.target.value);
-                renderTable();
+                updateAll();
+            });
+            inputs.cycle.addEventListener('input', e => {
+                localStorage.setItem('rp_cycleLength', e.target.value);
+                updateAll();
             });
         }
 
-        function calculateDate(startStr, days) {
+        // 統一更新畫面
+        function updateAll() {
+            const startDate = document.getElementById('startDateInput').value;
+            updateNextCycle(startDate);
+            updateCurrentPhase(startDate);
+            renderTable();
+        }
+
+        function calculateDateStr(startStr, days) {
             if (!startStr) return 'YYYY/MM/DD';
             let date = new Date(startStr);
             date.setDate(date.getDate() + days);
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            return `${date.getFullYear()}/${mm}/${dd}`;
+            return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
         }
 
+        // 繪製動態推算表格
         function renderTable() {
             const startDate = document.getElementById('startDateInput').value;
-            const tbody = document.getElementById('phasesTbody');
+            const dynPhases = getDynamicPhases();
             
-            tbody.innerHTML = phases.map((phase, i) => {
+            document.getElementById('phasesTbody').innerHTML = dynPhases.map((phase, i) => {
                 const dateRange = startDate 
-                    ? `${calculateDate(startDate, phase.offset)} - ${calculateDate(startDate, phase.offset + phase.avg - 1)}`
+                    ? `${calculateDateStr(startDate, phase.offset)} - ${calculateDateStr(startDate, phase.offset + phase.avg - 1)}`
                     : 'YYYY/MM/DD - YYYY/MM/DD';
 
                 const btnClass = activeQuotePhaseIndex === i 
-                    ? 'bg-pink-100 text-pink-500 scale-110' 
-                    : 'text-stone-200 hover:text-pink-300';
+                    ? 'bg-pink-100 text-pink-500 scale-110 shadow-sm' 
+                    : 'text-stone-200 hover:text-pink-300 bg-stone-50/50 hover:bg-pink-50';
 
                 const savedReal = localStorage.getItem(`rp_realRecord_${i}`) || '';
 
@@ -305,33 +359,21 @@
                     <tr class="group border-b border-pink-50/50 hover:bg-pink-50/20 transition-all">
                         <td class="py-6 px-2">
                             <div class="flex items-center gap-3">
-                                <span class="${phase.iconColor} opacity-70">
-                                    <i data-lucide="${phase.iconName}" class="w-5 h-5"></i>
-                                </span>
+                                <span class="${phase.iconColor} opacity-70"><i data-lucide="${phase.iconName}" class="w-5 h-5"></i></span>
                                 <span class="font-bold text-stone-700 whitespace-nowrap">${phase.name}</span>
                             </div>
                         </td>
-                        <td class="py-6 px-2 text-stone-400 font-mono text-xs">
+                        <td class="py-6 px-2 text-stone-400 font-mono text-xs font-bold tracking-wide">
                             ${dateRange}
                         </td>
-                        <td class="py-6 px-2">
-                            <span class="text-stone-400 text-xs italic leading-snug block max-w-[160px]">${phase.focus}</span>
-                        </td>
+                        <td class="py-6 px-2"><span class="text-stone-400 text-xs italic leading-snug block max-w-[160px]">${phase.focus}</span></td>
                         <td class="py-6 px-2 text-center">
-                            <input 
-                                type="text" 
-                                value="${savedReal}"
-                                oninput="localStorage.setItem('rp_realRecord_${i}', this.value)"
-                                placeholder="MM/DD - MM/DD"
-                                class="bg-transparent border-b border-pink-100 focus:border-pink-300 outline-none w-28 text-center text-xs p-1 placeholder:text-pink-100 text-stone-500"
-                            />
+                            <input type="text" value="${savedReal}" oninput="localStorage.setItem('rp_realRecord_${i}', this.value)"
+                                placeholder="MM/DD - MM/DD" class="bg-transparent border-b border-pink-100 focus:border-pink-300 outline-none w-28 text-center text-xs p-1 placeholder:text-pink-100 text-stone-500 font-mono"/>
                         </td>
                         <td class="py-6 text-center">
-                            <button 
-                                onclick="showRandomQuote(${i})"
-                                class="p-2 rounded-full transition-all duration-300 ${btnClass}"
-                            >
-                                <i data-lucide="gift" class="w-5 h-5"></i>
+                            <button onclick="showRandomQuote(${i})" class="p-2.5 rounded-full transition-all duration-300 ${btnClass}">
+                                <i data-lucide="gift" class="w-4 h-4"></i>
                             </button>
                         </td>
                     </tr>
@@ -340,57 +382,90 @@
             lucide.createIcons();
         }
 
+        // 更新目前階段
         function updateCurrentPhase(startDate) {
             const badge = document.getElementById('currentPhaseBadge');
             const content = document.getElementById('currentPhaseContent');
 
             if (!startDate) {
-                badge.className = "text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400";
-                content.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5"></i><span>等待紀錄中</span>`;
-                lucide.createIcons();
+                badge.className = "inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400";
+                content.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5"></i><span>等待輸入日期</span>`;
                 return;
             }
 
+            const cycleLength = parseInt(document.getElementById('cycleLengthInput').value) || 28;
             const start = new Date(startDate);
             start.setHours(0,0,0,0);
             const today = new Date();
             today.setHours(0,0,0,0);
 
             const diffDays = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-            const currentDay = diffDays >= 0 ? (diffDays % 28) : -1;
+            const currentDay = diffDays >= 0 ? (diffDays % cycleLength) : -1;
             
+            const dynPhases = getDynamicPhases();
             let phaseIdx = null;
-            if (currentDay >= 17) phaseIdx = 3;
-            else if (currentDay >= 13) phaseIdx = 2;
-            else if (currentDay >= 5) phaseIdx = 1;
-            else if (currentDay >= 0) phaseIdx = 0;
+            if (currentDay >= dynPhases[3].offset) phaseIdx = 3;
+            else if (currentDay >= dynPhases[2].offset) phaseIdx = 2;
+            else if (currentDay >= dynPhases[1].offset) phaseIdx = 1;
+            else if (currentDay >= dynPhases[0].offset) phaseIdx = 0;
 
             if (phaseIdx !== null) {
-                const phase = phases[phaseIdx];
-                badge.className = `text-xs px-4 py-1.5 rounded-full font-bold transition-all shadow-sm ${phase.tagColor}`;
-                content.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="${phase.iconName}" class="w-3.5 h-3.5"></i>
-                        <span class="text-stone-600">${phase.name} - 第 ${currentDay + 1} 天</span>
-                    </div>
-                `;
+                const phase = dynPhases[phaseIdx];
+                badge.className = `inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold transition-all shadow-sm ${phase.tagColor}`;
+                content.innerHTML = `<i data-lucide="${phase.iconName}" class="w-3.5 h-3.5 mr-2"></i><span class="text-stone-600">${phase.name} <span class="ml-1 opacity-60">| 第 ${currentDay + 1} 天</span></span>`;
             } else {
-                badge.className = "text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400";
+                badge.className = "inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400";
                 content.innerHTML = `<span>尚未進入週期</span>`;
             }
             lucide.createIcons();
         }
 
+        // 全新功能：更新下次預測日
+        function updateNextCycle(startDate) {
+            const badge = document.getElementById('nextCycleBadge');
+            const content = document.getElementById('nextCycleContent');
+            
+            if (!startDate) {
+                badge.className = "inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold bg-stone-100 text-stone-400";
+                content.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5"></i><span>等待輸入日期</span>`;
+                return;
+            }
+
+            const cycleLength = parseInt(document.getElementById('cycleLengthInput').value) || 28;
+            let start = new Date(startDate);
+            start.setHours(0,0,0,0);
+            
+            // 預測日 = 起始日 + 週期天數
+            let nextDate = new Date(start);
+            nextDate.setDate(nextDate.getDate() + cycleLength);
+            const nextDateStr = `${nextDate.getFullYear()}/${String(nextDate.getMonth()+1).padStart(2,'0')}/${String(nextDate.getDate()).padStart(2,'0')}`;
+
+            // 計算倒數天數
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const diffDays = Math.ceil((nextDate - today) / (1000 * 60 * 60 * 24));
+
+            let hint = "";
+            let hintStyle = "opacity-70";
+            if (diffDays > 0) { hint = `還有 ${diffDays} 天`; }
+            else if (diffDays === 0) { hint = `就是今天！`; hintStyle = "text-pink-500 animate-pulse"; }
+            else { hint = `延遲 ${Math.abs(diffDays)} 天`; hintStyle = "text-red-400"; }
+
+            badge.className = "inline-flex items-center text-xs px-4 py-1.5 rounded-full font-bold transition-all shadow-sm bg-pink-100/50 text-pink-600 border border-pink-100";
+            content.innerHTML = `<i data-lucide="calendar-heart" class="w-3.5 h-3.5 mr-2"></i><span class="font-mono">${nextDateStr}</span><span class="text-[10px] ml-2 ${hintStyle}">(${hint})</span>`;
+            lucide.createIcons();
+        }
+
         window.showRandomQuote = function(index) {
-            const quotes = phases[index].warmQuotes;
-            const text = quotes[Math.floor(Math.random() * quotes.length)];
+            const quotes = phaseTexts[index].warmQuotes;
+            document.getElementById('quotePhaseName').textContent = `Message for ${phaseTexts[index].name}`;
+            document.getElementById('quoteText').textContent = `「${quotes[Math.floor(Math.random() * quotes.length)]}」`;
             
             activeQuotePhaseIndex = index;
-            document.getElementById('quotePhaseName').textContent = `Message for ${phases[index].name}`;
-            document.getElementById('quoteText').textContent = `「${text}」`;
-            
             const area = document.getElementById('quoteArea');
-            area.classList.remove('hidden');
+            area.classList.remove('hidden', 'animate-in');
+            void area.offsetWidth; 
+            area.classList.add('animate-in');
             area.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
             renderTable();
